@@ -21,7 +21,7 @@ export default function AuthenticationPage() {
           src="/task_cover_pic.jpg"
           className="absolute inset-0 object-cover h-full w-full"
         />
-        <div className="relative z-20 flex items-center text-lg font-medium">
+        <div className="relative z-20 flex items-center text-lg font-medium text-purple-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -34,7 +34,7 @@ export default function AuthenticationPage() {
           >
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
-          Acme Inc
+          SUA Inc
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
