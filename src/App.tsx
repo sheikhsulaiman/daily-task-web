@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
+import AuthenticationPage from "./components/pages/AuthenticationPage";
 
 function App() {
   return (
     <>
-      <div>
-        <Button>Click Me</Button>
-      </div>
+      <main className="container mx-auto flex flex-col justify-center min-h-screen">
+        <AuthenticationPage />
+      </main>
     </>
   );
 }
