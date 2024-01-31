@@ -24,8 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { getAuth } from "firebase/auth";
-import { firebaseApp } from "@/firebase/config";
+import { auth, firebaseApp } from "@/firebase/config";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -50,7 +49,6 @@ const formSchema = z
   );
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const auth = getAuth(firebaseApp);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [signInWithGoogle, googleUser, googleLoading, googleError] =
     useSignInWithGoogle(auth);
