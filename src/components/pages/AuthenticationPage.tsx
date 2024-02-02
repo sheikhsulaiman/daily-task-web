@@ -1,21 +1,26 @@
 import { Link } from "react-router-dom";
-
+import { Button } from "@/components/ui/button";
+import { UserSignUpForm } from "@/components/forms/user-signup-form";
+import { useState } from "react";
+import { UserSignInForm } from "../forms/user-signin-form";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { UserAuthForm } from "@/components/user-auth-form";
+import SocialAuth from "../SocialAuth";
 
 export default function AuthenticationPage() {
+  const [isSignUp, setIsSignUp] = useState<boolean>(true);
   return (
     <div className="container relative h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0 border rounded-md overflow-hidden">
-      <Link
-        to="/examples/authentication"
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "hidden md:block absolute right-4 top-4 md:right-8 md:top-8"
-        )}
+      <Button
+        type="button"
+        onClick={() => {
+          setIsSignUp(!isSignUp);
+        }}
+        variant={"ghost"}
+        size={"sm"}
+        className={"absolute right-4 top-4 md:right-8 md:top-8"}
       >
-        Login
-      </Link>
+        {isSignUp ? "Log In" : "Sign Up"}
+      </Button>
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
         <img
           src="/task_cover_pic.jpg"
@@ -47,7 +52,7 @@ export default function AuthenticationPage() {
           </blockquote>
         </div>
       </div>
-      <div className="lg:p-8">
+      <div className="p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
@@ -57,7 +62,10 @@ export default function AuthenticationPage() {
               Enter your email below to create your account
             </p>
           </div>
-          <UserAuthForm />
+          <div className="grid gap-6">
+            {isSignUp ? <UserSignUpForm /> : <UserSignInForm />}
+            <SocialAuth />
+          </div>
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
             <Link

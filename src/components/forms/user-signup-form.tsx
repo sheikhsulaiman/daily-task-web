@@ -24,9 +24,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { auth, firebaseApp } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const formSchema = z
   .object({
@@ -48,12 +48,7 @@ const formSchema = z
     }
   );
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [signInWithGoogle, googleUser, googleLoading, googleError] =
-    useSignInWithGoogle(auth);
-  const [signInWithGithub, githubUser, githubLoading, githubError] =
-    useSignInWithGithub(auth);
+export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
 
@@ -77,25 +72,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       </h1>
     );
   }
-  if (googleUser) {
-    return <h1>{"Logged in as: " + googleUser.user.displayName}</h1>;
-  }
-  if (githubUser) {
-    return <h1>{"Logged in as: " + githubUser.user.displayName}</h1>;
-  }
 
   if (error) {
     toast.error(error.message);
   }
-  if (googleError) {
-    toast.error(googleError.message);
-  }
-  if (githubError) {
-    toast.error(githubError.message);
-  }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <>
+      {/* <div className={cn("grid gap-6", className)} {...props}> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -109,7 +93,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     {...field}
                     placeholder="test@example.com"
                     type="email"
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormDescription>
@@ -130,7 +114,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     {...field}
                     placeholder="create a password"
                     type="password"
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />
@@ -148,7 +132,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     {...field}
                     placeholder="Re-type to confirm password."
                     type="password"
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />
@@ -156,58 +140,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             )}
           />
 
-          <Button
-            className="block w-full mt-2"
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Sign In with Email
+          <Button className="flex w-full mt-2" type="submit" disabled={loading}>
+            {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+            Sign Up with Email
           </Button>
         </form>
       </Form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-      <div className="flex gap-2 w-full">
-        <Button
-          className="flex-1"
-          variant="outline"
-          type="button"
-          disabled={googleLoading}
-          onClick={() => signInWithGoogle()}
-        >
-          {googleLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Icons.google className="mr-2 h-4 w-4" />
-          )}{" "}
-          Google
-        </Button>
-        <Button
-          className="flex-1"
-          variant="outline"
-          type="button"
-          disabled={githubLoading}
-          onClick={() => signInWithGithub()}
-        >
-          {githubLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-          )}{" "}
-          GitHub
-        </Button>
-      </div>
-    </div>
+
+      {/* </div> */}
+    </>
   );
 }
