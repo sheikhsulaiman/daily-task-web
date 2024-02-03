@@ -15,6 +15,7 @@ import { auth } from "@/firebase/config";
 export function UserNav() {
   const profilePic = auth.currentUser?.photoURL;
   const userName = auth.currentUser?.displayName;
+  const userEmail = auth.currentUser?.email;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,9 +29,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">shadcn</p>
+            <p className="text-sm font-medium leading-none">{userName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
+              {userEmail}
             </p>
           </div>
         </DropdownMenuLabel>
