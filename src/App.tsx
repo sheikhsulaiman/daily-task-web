@@ -7,6 +7,7 @@ import { auth } from "@/firebase/config";
 import Home from "@/components/pages/Home";
 import Landing from "@/components/pages/Landing";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { ThemeProvider } from "@/components/theme-provider";
 
 function App() {
   const [user, setUser] = useState<User | null>(auth.currentUser);
@@ -26,7 +27,7 @@ function App() {
   }, [auth, user]);
 
   return (
-    <>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route
@@ -51,7 +52,7 @@ function App() {
         />
       </Routes>
       <Toaster />
-    </>
+    </ThemeProvider>
   );
 }
 

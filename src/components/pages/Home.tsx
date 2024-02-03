@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config";
 
 const Home = () => {
-  const userName = auth.name;
+  const userName = auth.currentUser?.email;
   return (
     <>
       <nav className="w-full flex items-center justify-between p-2 bg-yellow-200">
@@ -11,6 +11,7 @@ const Home = () => {
 
         <Button
           type="button"
+          variant={"destructive"}
           onClick={() => {
             signOut(auth);
           }}
