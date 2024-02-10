@@ -1,17 +1,10 @@
-"use client";
-
 import * as React from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  useCreateUserWithEmailAndPassword,
-  useSignInWithGoogle,
-  useSignInWithGithub,
-} from "react-firebase-hooks/auth";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { toast } from "sonner";
 
-import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

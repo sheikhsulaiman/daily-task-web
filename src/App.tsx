@@ -6,9 +6,9 @@ import Home from "@/components/pages/Home";
 import Landing from "@/components/pages/Landing";
 
 import { ThemeProvider } from "@/components/theme-provider";
-import SettingsLayout from "./components/pages/SettingsLayout";
-import Settings from "./components/pages/Settings";
-import RequireAuth from "./components/RequireAuth";
+import SettingsLayout from "@/components/pages/SettingsLayout";
+import RequireAuth from "@/components/RequireAuth";
+import Profile from "@/components/pages/Profile";
 // export const UserContext = createContext();
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
 
         <Route path="/app">
           <Route element={<SettingsLayout />}>
-            <Route path="settings" element={<Settings />} />
+            <Route path="settings" element={<Profile />} />
           </Route>
         </Route>
 
