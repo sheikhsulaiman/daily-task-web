@@ -12,7 +12,6 @@ export default function AuthenticationPage() {
   const location = useLocation();
   const [isSignUp, setIsSignUp] = useState<boolean>(true);
   const parentpath: string = location.state.from.pathname;
-  console.log(parentpath);
   if (loading) {
     return <div>Loading...</div>;
   }

@@ -1,46 +1,43 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "@/components/nav/sidebar-nav";
+import { Outlet } from "react-router-dom";
 
 const sidebarNavItems = [
   {
     title: "Profile",
-    href: "/examples/forms",
+    href: "/app/settings",
   },
   {
     title: "Account",
-    href: "/examples/forms/account",
+    href: "/app/settings/account",
   },
   {
     title: "Appearance",
-    href: "/examples/forms/appearance",
+    href: "/app/settings/appearance",
   },
   {
     title: "Notifications",
-    href: "/examples/forms/notifications",
+    href: "/app/settings/notifications",
   },
   {
     title: "Display",
-    href: "/examples/forms/display",
+    href: "/app/settings/display",
   },
 ];
 
-interface SettingsLayoutProps {
-  children: React.ReactNode;
-}
-
-export default function SettingsLayout({ children }: SettingsLayoutProps) {
+export default function SettingsLayout() {
   return (
     <>
       <div className="md:hidden">
         <img
-          src="/examples/forms-light.png"
+          src="/app/settings-light.png"
           width={1280}
           height={791}
           alt="Forms"
           className="block dark:hidden"
         />
         <img
-          src="/examples/forms-dark.png"
+          src="/app/settings-dark.png"
           width={1280}
           height={791}
           alt="Forms"
@@ -59,7 +56,9 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
           <aside className="-mx-4 lg:w-1/5">
             <SidebarNav items={sidebarNavItems} />
           </aside>
-          <div className="flex-1 lg:max-w-2xl">{children}</div>
+          <div className="flex-1 lg:max-w-2xl">
+            <Outlet />
+          </div>
         </div>
       </div>
     </>

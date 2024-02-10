@@ -1,7 +1,9 @@
-import React from "react";
-
 const Settings = () => {
-  return <div>Settings</div>;
+  return (
+    <div>
+      <p>Sulaiman</p>
+    </div>
+  );
 };
 
 export default Settings;

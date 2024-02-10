@@ -26,16 +26,11 @@ function App() {
           }
         />
 
-        {/* <Route
-          path="/settings"
-          element={
-            <ProtectedRoute path="/auth">
-              <SettingsLayout>
-                <Settings />
-              </SettingsLayout>
-            </ProtectedRoute>
-          }
-        /> */}
+        <Route path="/app">
+          <Route element={<SettingsLayout />}>
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Route>
 
         <Route
           path="/auth"
