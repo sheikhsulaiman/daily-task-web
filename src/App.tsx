@@ -1,53 +1,48 @@
 import AuthenticationPage from "@/components/pages/AuthenticationPage";
 import { Toaster } from "@/components/ui/sonner";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase/config";
+import { Routes, Route } from "react-router-dom";
+
 import Home from "@/components/pages/Home";
 import Landing from "@/components/pages/Landing";
-import ProtectedRoute from "@/components/ProtectedRoute";
+
 import { ThemeProvider } from "@/components/theme-provider";
+import SettingsLayout from "./components/pages/SettingsLayout";
+import Settings from "./components/pages/Settings";
+import RequireAuth from "./components/RequireAuth";
+// export const UserContext = createContext();
 
 function App() {
-  const [user, setUser] = useState<User | null>(auth.currentUser);
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        setUser(user);
-        // ...
-      } else {
-        // User is signed out
-        // ...
-        setUser(user);
-      }
-    });
-  }, [auth, user]);
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Routes>
         <Route path="/" element={<Landing />} />
+
         <Route
           path="/app"
           element={
-            <ProtectedRoute user={user} redirectPath="/auth">
+            <RequireAuth>
               <Home />
-            </ProtectedRoute>
+            </RequireAuth>
           }
         />
+
+        {/* <Route
+          path="/settings"
+          element={
+            <ProtectedRoute path="/auth">
+              <SettingsLayout>
+                <Settings />
+              </SettingsLayout>
+            </ProtectedRoute>
+          }
+        /> */}
+
         <Route
           path="/auth"
           element={
-            user ? (
-              <Navigate to={"/app"} />
-            ) : (
-              <main className="mx-auto container flex flex-col items-center justify-center min-h-screen">
-                <AuthenticationPage />
-              </main>
-            )
+            <main className="mx-auto container flex flex-col items-center justify-center min-h-screen">
+              <AuthenticationPage />
+            </main>
           }
         />
       </Routes>

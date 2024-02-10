@@ -10,7 +10,7 @@ const Landing = () => {
           Daily Task
         </h1>
         <Link to={"/app"}>
-          <Button type="button">
+          <Button type="button" variant={"outline"}>
             Get Started <ArrowUpRightFromSquareIcon className="h-4 w-4 ml-2" />
           </Button>
         </Link>

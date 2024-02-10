@@ -1,13 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { UserSignUpForm } from "@/components/forms/user-signup-form";
 import { useState } from "react";
 import { UserSignInForm } from "../forms/user-signin-form";
-import { cn } from "@/lib/utils";
 import SocialAuth from "../SocialAuth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/config";
 
 export default function AuthenticationPage() {
+  const [user, loading] = useAuthState(auth);
+  const location = useLocation();
   const [isSignUp, setIsSignUp] = useState<boolean>(true);
+  const parentpath: string = location.state.from.pathname;
+  console.log(parentpath);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (parentpath && user) {
+    return <Navigate replace to={parentpath} />;
+  }
   return (
     <div className="container relative h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0 border rounded-md overflow-hidden">
       <Button
