@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useUpdateProfile } from "react-firebase-hooks/auth";
 import { z } from "zod";
 
 import { cn } from "@/lib/utils";
@@ -15,6 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { auth } from "@/firebase/config";
+import { Loader2Icon } from "lucide-react";
+import { toast } from "sonner";
 
 const profileFormSchema = z.object({
   username: z
@@ -25,19 +29,14 @@ const profileFormSchema = z.object({
     .max(30, {
       message: "Username must not be longer than 30 characters.",
     }),
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
+  // bio: z.string().max(160).min(4),
+  // urls: z
+  //   .array(
+  //     z.object({
+  //       value: z.string().url({ message: "Please enter a valid URL." }),
+  //     })
+  //   )
+  //   .optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -45,28 +44,36 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
   username: "",
-  bio: "I own a computer.",
-  urls: [
-    { value: "https://shadcn.com" },
-    { value: "http://twitter.com/shadcn" },
-  ],
+  // bio: "I own a computer.",
+  // urls: [
+  //   { value: "https://shadcn.com" },
+  //   { value: "http://twitter.com/shadcn" },
+  // ],
 };
 
 export function ProfileForm() {
+  const [updateProfile, updating, error] = useUpdateProfile(auth);
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
     mode: "onChange",
   });
 
-  const { fields, append } = useFieldArray({
-    name: "urls",
-    control: form.control,
-  });
+  // const { fields, append } = useFieldArray({
+  //   name: "urls",
+  //   control: form.control,
+  // });
 
-  function onSubmit(data: ProfileFormValues) {
-    console.log("i a on Submit");
-    console.log(data);
+  if (error) {
+    toast(error.message);
+  }
+
+  async function onSubmit(data: ProfileFormValues) {
+    const success = await updateProfile({ displayName: data.username });
+    if (success) {
+      toast("Updated successfully.");
+    }
   }
 
   return (
@@ -90,7 +97,7 @@ export function ProfileForm() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="bio"
           render={({ field }) => (
@@ -107,8 +114,8 @@ export function ProfileForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <div>
+        /> */}
+        {/* <div>
           {fields.map((field, index) => (
             <FormField
               control={form.control}
@@ -139,8 +146,14 @@ export function ProfileForm() {
           >
             Add URL
           </Button>
-        </div>
-        <Button type="submit">Update profile</Button>
+        </div> */}
+        <Button
+          className="flex items-center justify-center gap-2"
+          type="submit"
+        >
+          {updating && <Loader2Icon className="h-3 w-3 animate-spin" />}
+          Update profile
+        </Button>
       </form>
     </Form>
   );
