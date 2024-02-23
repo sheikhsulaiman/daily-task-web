@@ -1,9 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useUpdateProfile } from "react-firebase-hooks/auth";
 import { z } from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { auth } from "@/firebase/config";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -84,14 +83,18 @@ export function ProfileForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Display name</FormLabel>
               <FormControl>
-                <Input placeholder="sulaiman" {...field} />
+                <Input
+                  placeholder={auth.currentUser?.displayName ?? "e.g, Sulaiman"}
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a
                 pseudonym.
               </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
