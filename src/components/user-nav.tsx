@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { auth } from "@/firebase/config";
 import { Link, Navigate } from "react-router-dom";
+import avatarFallbackGenarator from "./avatar-fallback-generator";
 
 export function UserNav() {
   const profilePic = auth.currentUser?.photoURL;
@@ -23,7 +24,9 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage src={profilePic?.toString()} alt={userName!} />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarFallback>
+              {avatarFallbackGenarator(userName || "Daily Task")}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -38,10 +41,12 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          <Link to={"/app/settings"}>
+            <DropdownMenuItem>
+              Profile
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem>
             Billing
             <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
