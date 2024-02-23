@@ -2,17 +2,17 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { ProfileForm } from "@/components/forms/profile-form";
 import { auth, storage } from "@/firebase/config";
 import { ImagePlusIcon, Loader2, PencilIcon } from "lucide-react";
-import { getStorage, ref as storageRef } from "firebase/storage";
+import { getDownloadURL, ref as storageRef } from "firebase/storage";
 import { useUploadFile } from "react-firebase-hooks/storage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatarFallbackGenarator from "@/components/avatar-fallback-generator";
+import { useUpdateProfile } from "react-firebase-hooks/auth";
 
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -23,13 +23,19 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Profile = () => {
-  const [user, loading] = useAuthState(auth);
+  const [pickedImage, setPickedImage] = useState<File | null>(null);
   const [isImagePicked, setIsImagePicked] = useState<boolean>(false);
+
+  const [user, loading] = useAuthState(auth);
+  const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
+
+  const ref = storageRef(storage, `/userPhotoUrls/${pickedImage?.name}`);
+
+  const [updateProfile, updating, userProfileUpdateError] =
+    useUpdateProfile(auth);
 
   const userName = user?.displayName;
   const profilePic = user?.photoURL;
-
-  const [pickedImage, setPickedImage] = useState<File | null>(null);
 
   useEffect(() => {
     if (pickedImage !== null) {
@@ -39,35 +45,28 @@ const Profile = () => {
     }
   }, [pickedImage]);
 
-  const [uploadFile, uploading, snapshot, error] = useUploadFile();
-  const ref = storageRef(storage, `/userPhotoUrls/${pickedImage?.name}`);
-
   const handleImageUpload = async () => {
-    console.log("handleImageUpload");
     try {
       if (pickedImage) {
-        const newPhotoUrl = await uploadFile(ref, pickedImage, {
+        await uploadFile(ref, pickedImage, {
           contentType: pickedImage.type,
         });
+        const photoURL = await getDownloadURL(ref);
+        console.log(photoURL);
+        updateProfile({ photoURL });
         toast.success("Photo updated successfully.");
-        alert(`Result: ${JSON.stringify(newPhotoUrl)}`);
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
-      alert("Failed to upload image. Please try again later.");
+      toast.error("Something went wrong!");
     }
   };
 
-  // const pickedImageHandler = (isPicked: boolean) => {
-  //   if (isPicked) {
-  //     setIsImagePicked(true);
-  //   } else {
-  //     setIsImagePicked(false);
-  //   }
-  // };
+  if (pickedImage !== null && userProfileUpdateError) {
+    toast.error(userProfileUpdateError.message);
+  }
 
-  if (error) {
-    toast.error(error.message);
+  if (pickedImage !== null && uploadError) {
+    toast.error(uploadError.message);
   }
 
   const handleFileReceive = (file: File) => {
@@ -89,22 +88,28 @@ const Profile = () => {
         </div>
         {loading && <Loader2 className="animate-spin" />}
         {user?.photoURL ? (
-          <div className="relative flex p-2">
+          <div className="relative flex items-center justify-center p-2">
+            {(uploading || updating) && (
+              <Loader2 className="absolute text-primary w-full h-full animate-spin" />
+            )}
+
             <AlertDialog>
-              <AlertDialogTrigger className="border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-full h-6 absolute z-10 bottom-0 right-0 p-1">
+              <AlertDialogTrigger
+                disabled={uploading || updating}
+                className="border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-full h-6 absolute z-10 bottom-0 right-0 p-1"
+              >
                 <PencilIcon className="h-4 w-4 text-primary" />
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    <ImagePicker onFilePick={handleFileReceive} />
-                  </AlertDialogDescription>
+
+                  <ImagePicker onFilePick={handleFileReceive} />
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
-                    disabled={!isImagePicked || uploading}
+                    disabled={!isImagePicked}
                     onClick={handleImageUpload}
                   >
                     Continue
@@ -128,14 +133,13 @@ const Profile = () => {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  <ImagePicker onFilePick={handleFileReceive} />
-                </AlertDialogDescription>
+
+                <ImagePicker onFilePick={handleFileReceive} />
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  disabled={!isImagePicked || uploading}
+                  disabled={!isImagePicked}
                   onClick={() => handleImageUpload}
                 >
                   Continue
