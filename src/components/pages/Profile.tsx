@@ -7,6 +7,7 @@ import { useUploadFile } from "react-firebase-hooks/storage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatarFallbackGenarator from "@/components/avatar-fallback-generator";
 import { useUpdateProfile } from "react-firebase-hooks/auth";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   AlertDialog,
@@ -27,15 +28,19 @@ const Profile = () => {
   const [isImagePicked, setIsImagePicked] = useState<boolean>(false);
 
   const [user, loading] = useAuthState(auth);
-  const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
-
-  const ref = storageRef(storage, `/userPhotoUrls/${pickedImage?.name}`);
-
-  const [updateProfile, updating, userProfileUpdateError] =
-    useUpdateProfile(auth);
 
   const userName = user?.displayName;
   const profilePic = user?.photoURL;
+
+  const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
+
+  const ref = storageRef(
+    storage,
+    `/userPhotoUrls/${uuidv4()}${pickedImage?.name}`
+  );
+
+  const [updateProfile, updating, userProfileUpdateError] =
+    useUpdateProfile(auth);
 
   useEffect(() => {
     if (pickedImage !== null) {
@@ -52,7 +57,6 @@ const Profile = () => {
           contentType: pickedImage.type,
         });
         const photoURL = await getDownloadURL(ref);
-        console.log(photoURL);
         updateProfile({ photoURL });
         toast.success("Photo updated successfully.");
       }
