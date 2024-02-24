@@ -10,6 +10,7 @@ import SettingsLayout from "@/components/pages/SettingsLayout";
 import RequireAuth from "@/components/RequireAuth";
 import Profile from "@/components/pages/Profile";
 import TaskPage from "./components/pages/TaskPage";
+import NewTaskPage from "./components/pages/NewTaskPage";
 // export const UserContext = createContext();
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="settings" element={<Profile />} />
           </Route>
           <Route path="tasks/*" element={<TaskPage />} />
+          <Route path="tasks/new" element={<NewTaskPage />} />
         </Route>
 
         <Route

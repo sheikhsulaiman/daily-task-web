@@ -8,6 +8,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "@/firebase/config";
 import { collection } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function TasksPage() {
   const [value, loading, error] = useCollection(collection(db, "tasks"), {
@@ -16,6 +17,10 @@ export default function TasksPage() {
 
   const rawData = value?.docs.map((doc) => doc.data() as Task);
   const tasks: Task[] | undefined = rawData;
+
+  if (error) {
+    toast.error(error.message);
+  }
 
   return (
     <>
@@ -31,7 +36,7 @@ export default function TasksPage() {
             <UserNav />
           </div>
         </div>
-        {error && <strong>Error: {JSON.stringify(error)}</strong>}
+
         {loading && (
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="animate-spin" />

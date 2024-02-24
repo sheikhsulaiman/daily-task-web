@@ -10,6 +10,16 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import NewTaskForm from "./forms/new-task-form";
+
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
@@ -56,12 +66,25 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
-      <Link to={"tasks/new"}>
+      <Dialog>
+        <DialogTrigger className="h-8 ml-2 px-3 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
+          <PlusIcon className="h-4 w-4 font-bold mr-1" />
+          {"New Task"}
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create a new task</DialogTitle>
+          </DialogHeader>
+          <NewTaskForm />
+        </DialogContent>
+      </Dialog>
+
+      {/* <Link to={"tasks/new"}>
         <Button type="button" className="ml-2 font-bold" size={"sm"}>
           <PlusIcon className="h-4 w-4 font-bold mr-1" />
           New Task
         </Button>
-      </Link>
+      </Link> */}
     </div>
   );
 }
