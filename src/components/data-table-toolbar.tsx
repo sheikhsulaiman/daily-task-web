@@ -19,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import NewTaskForm from "./forms/new-task-form";
+import { useState } from "react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -28,6 +29,11 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  function handleDialogOpen(open: boolean): void {
+    setIsOpen(open);
+  }
 
   return (
     <div className="flex items-center justify-between">
@@ -66,8 +72,11 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
-      <Dialog>
-        <DialogTrigger className="h-8 ml-2 px-3 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
+      <Dialog onOpenChange={handleDialogOpen} open={isOpen}>
+        <DialogTrigger
+          onClick={() => setIsOpen(true)}
+          className="h-8 ml-2 px-3 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90"
+        >
           <PlusIcon className="h-4 w-4 font-bold mr-1" />
           {"New Task"}
         </DialogTrigger>
@@ -75,7 +84,7 @@ export function DataTableToolbar<TData>({
           <DialogHeader>
             <DialogTitle>Create a new task</DialogTitle>
           </DialogHeader>
-          <NewTaskForm />
+          <NewTaskForm isDialogOpen={handleDialogOpen} />
         </DialogContent>
       </Dialog>
 

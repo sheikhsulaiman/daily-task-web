@@ -17,7 +17,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { labels, priorities, statuses } from "@/data/data";
 import { Separator } from "../ui/separator";
-const NewTaskForm = () => {
+import React from "react";
+
+interface NewTaskFormProps {
+  isDialogOpen: (isOpen: boolean) => void;
+}
+const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
   const newTaskForm = useForm<Task>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
@@ -31,6 +36,7 @@ const NewTaskForm = () => {
 
   function onSubmit(values: Task) {
     console.log(values);
+    isDialogOpen(false);
   }
   return (
     <Form {...newTaskForm}>
@@ -173,8 +179,16 @@ const NewTaskForm = () => {
             )}
           />
         </div>
-
-        <Button type="submit">Save</Button>
+        <div className=" flex gap-2 justify-end">
+          <Button
+            onClick={() => isDialogOpen(false)}
+            type="button"
+            variant={"secondary"}
+          >
+            Cancel
+          </Button>
+          <Button type="submit">Save</Button>
+        </div>
       </form>
     </Form>
   );
