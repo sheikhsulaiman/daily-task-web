@@ -7,6 +7,8 @@ import { DataTableViewOptions } from "./data-table-view-options";
 
 import { priorities, statuses } from "../data/data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { PlusIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -54,6 +56,12 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
+      <Link to={"tasks/new"}>
+        <Button type="button" className="ml-2 font-bold" size={"sm"}>
+          <PlusIcon className="h-4 w-4 font-bold mr-1" />
+          New Task
+        </Button>
+      </Link>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import SettingsLayout from "@/components/pages/SettingsLayout";
 import RequireAuth from "@/components/RequireAuth";
 import Profile from "@/components/pages/Profile";
+import TaskPage from "./components/pages/TaskPage";
 // export const UserContext = createContext();
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route element={<SettingsLayout />}>
             <Route path="settings" element={<Profile />} />
           </Route>
+          <Route path="tasks/*" element={<TaskPage />} />
         </Route>
 
         <Route

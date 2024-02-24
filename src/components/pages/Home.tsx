@@ -1,10 +1,10 @@
-import TaskPage from "./TaskPage";
+import TasksPage from "./TasksPage";
 
 const Home = () => {
   return (
     <>
       <main className="container mx-auto">
-        <TaskPage />
+        <TasksPage />
       </main>
     </>
   );

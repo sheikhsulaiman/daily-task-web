@@ -18,6 +18,7 @@ import {
 
 import { labels } from "../data/data";
 import { taskSchema } from "../data/schema";
+import { Link } from "react-router-dom";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -40,7 +41,9 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <Link to={`tasks/${task.id}`}>
+          <DropdownMenuItem>Edit</DropdownMenuItem>
+        </Link>
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
