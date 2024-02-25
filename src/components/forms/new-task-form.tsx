@@ -17,16 +17,21 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { labels, priorities, statuses } from "@/data/data";
 import { Separator } from "../ui/separator";
-import React from "react";
+import React, { useState } from "react";
+import { useTaskStore } from "@/stores/task-store";
+import { Loader2 } from "lucide-react";
 
 interface NewTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
 }
 const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
+  const [isLoading, setIsLoadind] = useState<boolean>(false);
+  const globalTask = useTaskStore((state) => state.tasks);
+  const addNewTask = useTaskStore((state) => state.pushTask);
   const newTaskForm = useForm<Task>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      id: "",
+      id: `TASK-${globalTask.length}`,
       title: "",
       label: labels[0].value,
       priority: priorities[0].value,
@@ -35,13 +40,16 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
   });
 
   function onSubmit(values: Task) {
+    setIsLoadind(true);
     console.log(values);
+    addNewTask(values);
+    setIsLoadind(false);
     isDialogOpen(false);
   }
   return (
     <Form {...newTaskForm}>
       <form onSubmit={newTaskForm.handleSubmit(onSubmit)} className="space-y-2">
-        <FormField
+        {/* <FormField
           name="id"
           control={newTaskForm.control}
           render={({ field }) => (
@@ -53,7 +61,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           name="title"
           control={newTaskForm.control}
@@ -184,10 +192,13 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
             onClick={() => isDialogOpen(false)}
             type="button"
             variant={"secondary"}
+            disabled={isLoading}
           >
             Cancel
           </Button>
-          <Button type="submit">Save</Button>
+          <Button disabled={isLoading} variant={"default"} type="submit">
+            {isLoading && <Loader2 className="animate-spin h-2 w-3" />} Save
+          </Button>
         </div>
       </form>
     </Form>

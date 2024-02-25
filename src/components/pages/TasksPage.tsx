@@ -9,6 +9,7 @@ import { db } from "@/firebase/config";
 import { collection } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTaskStore } from "@/stores/task-store";
 
 export default function TasksPage() {
   const [value, loading, error] = useCollection(collection(db, "tasks"), {
@@ -16,10 +17,16 @@ export default function TasksPage() {
   });
 
   const rawData = value?.docs.map((doc) => doc.data() as Task);
+  // const globalTask = useTaskStore((state)=>state.tasks);
+  const setInitialTasks = useTaskStore((state) => state.setInitialTasks);
   const tasks: Task[] | undefined = rawData;
 
   if (error) {
     toast.error(error.message);
+  }
+
+  if (value) {
+    setInitialTasks(tasks!);
   }
 
   return (

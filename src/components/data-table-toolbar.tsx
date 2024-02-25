@@ -8,12 +8,10 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { priorities, statuses } from "../data/data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { PlusIcon } from "lucide-react";
-import { Link } from "react-router-dom";
 
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
