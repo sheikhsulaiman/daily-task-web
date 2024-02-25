@@ -20,6 +20,9 @@ import { Separator } from "../ui/separator";
 import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
 import { Loader2 } from "lucide-react";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { toast } from "sonner";
 
 interface NewTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
@@ -39,10 +42,12 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
     },
   });
 
-  function onSubmit(values: Task) {
+  async function onSubmit(values: Task) {
     setIsLoadind(true);
     console.log(values);
     addNewTask(values);
+    await setDoc(doc(db, "tasks", `${values.id}`), values);
+    toast.success(`${values.id} Has been saved successfully.`);
     setIsLoadind(false);
     isDialogOpen(false);
   }
