@@ -34,6 +34,13 @@ export const taskSchema = z.object({
     required_error: "You need to select one.",
   }),
   useruid: z.string(),
+  isFavorite: z
+    .boolean({
+      required_error: "isActive is required",
+      invalid_type_error: "isFavorite must be a boolean",
+    })
+    .default(false)
+    .optional(),
 });
 
 export type Task = z.infer<typeof taskSchema>;

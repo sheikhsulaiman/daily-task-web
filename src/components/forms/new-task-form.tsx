@@ -23,6 +23,7 @@ import { Loader2 } from "lucide-react";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 interface NewTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
@@ -30,17 +31,17 @@ interface NewTaskFormProps {
 const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
   const useruid = auth.currentUser?.uid;
   const [isLoading, setIsLoadind] = useState<boolean>(false);
-  const globalTask = useTaskStore((state) => state.tasks);
   const pushTask = useTaskStore((state) => state.pushTask);
   const newTaskForm = useForm<Task>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      id: `TASK-${globalTask.length}`,
+      id: `TASK-${uuidv4()}`,
       title: "",
       label: labels[0].value,
       priority: priorities[0].value,
       status: statuses[0].value,
       useruid: useruid,
+      isFavorite: false,
     },
   });
 
