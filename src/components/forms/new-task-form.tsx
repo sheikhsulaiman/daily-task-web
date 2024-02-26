@@ -24,6 +24,9 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import FavoriteSwitch from "../ui/favorite-switch";
 
 interface NewTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
@@ -70,19 +73,44 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
             </FormItem>
           )}
         /> */}
-        <FormField
-          name="title"
-          control={newTaskForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Task title</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., Buy Milk." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-2 items-end">
+          <FormField
+            name="title"
+            control={newTaskForm.control}
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Task title</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Buy Milk." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="isFavorite"
+            control={newTaskForm.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="flex mb-3 items-center space-x-2">
+                    <FavoriteSwitch
+                      id="isFavorite"
+                      checked={field.value}
+                      onChange={field.onChange}
+                    />
+                    {/* <Label
+                      className="hover:cursor-pointer hover:text-primary"
+                      htmlFor="isFavorite"
+                    >
+                      It's my favorite task.
+                    </Label> */}
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           name="status"
           control={newTaskForm.control}
@@ -157,44 +185,8 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
               </FormItem>
             )}
           />
-          <FormField
-            name="priority"
-            control={newTaskForm.control}
-            render={({ field }) => (
-              <FormItem className="border flex-1 rounded-sm p-2">
-                <FormLabel>Priority</FormLabel>
-                <Separator />
-                <FormControl>
-                  <RadioGroup
-                    defaultChecked={true}
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    {priorities.map((priority) => (
-                      <FormItem
-                        key={priority.value}
-                        className="flex items-end space-x-2"
-                      >
-                        <RadioGroupItem
-                          value={priority.value}
-                          id={priority.label}
-                        />
-
-                        <FormLabel
-                          className="hover:cursor-pointer w-full"
-                          htmlFor={priority.label}
-                        >
-                          {priority.label}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
+
         <div className=" flex gap-2 justify-end">
           <Button
             onClick={() => isDialogOpen(false)}

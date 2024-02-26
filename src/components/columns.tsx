@@ -9,6 +9,7 @@ import { labels, priorities, statuses } from "../data/data";
 import { Task } from "../data/schema";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
+import { Heart } from "lucide-react";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -53,9 +54,13 @@ export const columns: ColumnDef<Task>[] = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
+      const isFavorite = row.original.isFavorite;
 
       return (
         <div className="flex space-x-2">
+          {isFavorite && (
+            <Heart className="h-5 w-5 fill-current text-red-600" />
+          )}
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("title")}

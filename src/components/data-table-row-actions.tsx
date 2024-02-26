@@ -1,4 +1,4 @@
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon, DropdownMenuIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
 import { doc, deleteDoc } from "firebase/firestore";
 
@@ -22,6 +22,7 @@ import { labels } from "../data/data";
 import { Task, taskSchema } from "../data/schema";
 import { useTaskStore } from "@/stores/task-store";
 import { db } from "@/firebase/config";
+import { Copy, Pencil, Trash2 } from "lucide-react";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -59,32 +60,27 @@ export function DataTableRowActions<TData>({
           className="w-full"
           onClick={() => setSelectedTaskToEdit(task)}
         >
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem>
+            Edit
+            <Pencil className="ml-auto h-4 w-4" />
+          </DropdownMenuItem>
         </SheetTrigger>
 
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+        <DropdownMenuItem>
+          Make a copy <Copy className="ml-auto h-4 w-4" />
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          className="text-red-200"
           onClick={() => {
             handleDeleteTask(task);
           }}
         >
           Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+          <Trash2 className="ml-auto h-4 w-4 text-red-200" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

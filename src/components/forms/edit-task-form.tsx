@@ -23,6 +23,7 @@ import { Loader2 } from "lucide-react";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
+import FavoriteSwitch from "../ui/favorite-switch";
 
 interface EditTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
@@ -40,6 +41,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
       priority: selectedTaskToEdit?.priority,
       status: selectedTaskToEdit?.status,
       useruid: auth.currentUser?.uid,
+      isFavorite: selectedTaskToEdit?.isFavorite,
     },
   });
 
@@ -61,19 +63,44 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
         onSubmit={EditTaskForm.handleSubmit(onSubmit)}
         className="space-y-2"
       >
-        <FormField
-          name="title"
-          control={EditTaskForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Task title</FormLabel>
-              <FormControl>
-                <Input multiple placeholder="e.g., Buy Milk." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-2 items-end">
+          <FormField
+            name="title"
+            control={EditTaskForm.control}
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Task title</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., Buy Milk." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="isFavorite"
+            control={EditTaskForm.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="flex mb-3 items-center space-x-2">
+                    <FavoriteSwitch
+                      id="isFavorite"
+                      checked={field.value}
+                      onChange={field.onChange}
+                    />
+                    {/* <Label
+                      className="hover:cursor-pointer hover:text-primary"
+                      htmlFor="isFavorite"
+                    >
+                      It's my favorite task.
+                    </Label> */}
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           name="status"
           control={EditTaskForm.control}
