@@ -33,6 +33,7 @@ export const taskSchema = z.object({
   priority: z.enum([defaultPriority, ...priritiesExceptFirst], {
     required_error: "You need to select one.",
   }),
+  useruid: z.string(),
 });
 
 export type Task = z.infer<typeof taskSchema>;

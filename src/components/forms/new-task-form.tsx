@@ -21,16 +21,17 @@ import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
 import { Loader2 } from "lucide-react";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
 
 interface NewTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
 }
 const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
+  const useruid = auth.currentUser?.uid;
   const [isLoading, setIsLoadind] = useState<boolean>(false);
   const globalTask = useTaskStore((state) => state.tasks);
-  const addNewTask = useTaskStore((state) => state.pushTask);
+  const pushTask = useTaskStore((state) => state.pushTask);
   const newTaskForm = useForm<Task>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
@@ -39,6 +40,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
       label: labels[0].value,
       priority: priorities[0].value,
       status: statuses[0].value,
+      useruid: useruid,
     },
   });
 
@@ -46,6 +48,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
     setIsLoadind(true);
 
     await setDoc(doc(db, "tasks", `${values.id}`), values);
+    pushTask(values);
     toast.success(`${values.id} Has been saved successfully.`);
     setIsLoadind(false);
     isDialogOpen(false);

@@ -2,12 +2,8 @@ import { columns } from "@/components/columns";
 import { DataTable } from "@/components/data-table";
 import { UserNav } from "@/components/user-nav";
 import { Task } from "@/data/schema";
-
-import { useCollection } from "react-firebase-hooks/firestore";
-
-import { db } from "@/firebase/config";
-import { collection } from "firebase/firestore";
-import { Loader2 } from "lucide-react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
 import { useTaskStore } from "@/stores/task-store";
 import {
@@ -18,25 +14,53 @@ import {
   SheetTitle,
 } from "../ui/sheet";
 import EditTaskForm from "../forms/edit-task-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function TasksPage() {
-  const [value, loading, error] = useCollection(collection(db, "tasks"), {
-    snapshotListenOptions: { includeMetadataChanges: true },
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { tasks, pushTask } = useTaskStore();
 
-  const rawData = value?.docs.map((doc) => doc.data() as Task);
+  useEffect(() => {
+    //Reference to the task collection
+    const tasksRef = collection(db, "tasks");
+
+    //Query agains the collection
+    const taskQuery = query(
+      tasksRef,
+      where("useruid", "==", auth.currentUser?.uid)
+    );
+    const fetchData = async () => {
+      console.log("Reading firestore data.");
+      try {
+        setIsLoading(true);
+        const querySnapshot = await getDocs(taskQuery);
+        querySnapshot.forEach((doc) => pushTask(doc.data() as Task));
+        setIsLoading(false);
+      } catch (error) {
+        toast.error("Something went wrong.");
+      }
+    };
+    fetchData();
+  }, []);
+
+  // const [value, isLoading, error] = useCollection(collection(db, "tasks"), {
+  //   snapshotListenOptions: { includeMetadataChanges: true },
+  // });
+
+  // const rawData = value?.docs.map((doc) => doc.data() as Task);
   // const globalTask = useTaskStore((state)=>state.tasks);
-  const setInitialTasks = useTaskStore((state) => state.setInitialTasks);
-  const tasks: Task[] | undefined = rawData;
+  // const setInitialTasks = useTaskStore((state) => state.setInitialTasks);
+  // const tasks: Task[] | undefined = rawData;
+  // useEffect(() => {
+  //   if (value) {
+  //     setInitialTasks(rawData!);
+  //   }
+  // }, [value, setInitialTasks]);
+  // const tasks: Task[] | undefined = useTaskStore((state) => state.tasks);
 
-  if (error) {
-    toast.error(error.message);
-  }
-
-  if (value) {
-    setInitialTasks(tasks!);
-  }
+  // if (error) {
+  //   toast.error(error.message);
+  // }
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   function handleSheetOpen(open: boolean): void {
@@ -60,14 +84,9 @@ export default function TasksPage() {
               <UserNav />
             </div>
           </div>
-
-          {loading && (
-            <div className="flex items-center justify-center gap-2">
-              <Loader2 className="animate-spin" />
-              <p>Fetching Data...</p>
-            </div>
+          {tasks && (
+            <DataTable isLoading={isLoading} data={tasks!} columns={columns} />
           )}
-          {value && <DataTable data={tasks!} columns={columns} />}
         </div>
         <SheetContent>
           <SheetHeader>
