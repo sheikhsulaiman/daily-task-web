@@ -10,6 +10,15 @@ import { collection } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTaskStore } from "@/stores/task-store";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "../ui/sheet";
+import EditTaskForm from "../forms/edit-task-form";
+import { useState } from "react";
 
 export default function TasksPage() {
   const [value, loading, error] = useCollection(collection(db, "tasks"), {
@@ -29,29 +38,48 @@ export default function TasksPage() {
     setInitialTasks(tasks!);
   }
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  function handleSheetOpen(open: boolean): void {
+    setIsOpen(open);
+  }
+
   return (
     <>
-      <div className="flex h-full flex-1 flex-col space-y-8 p-8 ">
-        <div className="flex items-center justify-between space-y-2">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
-            <p className="text-muted-foreground">
-              Here&apos;s a list of your tasks for this month!
-            </p>
+      <Sheet open={isOpen} onOpenChange={handleSheetOpen}>
+        <div className="flex h-full flex-1 flex-col space-y-8 p-8 ">
+          <div className="flex items-center justify-between space-y-2">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Welcome back!
+              </h2>
+              <p className="text-muted-foreground">
+                Here&apos;s a list of your tasks for this month!
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <UserNav />
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <UserNav />
-          </div>
-        </div>
 
-        {loading && (
-          <div className="flex items-center justify-center gap-2">
-            <Loader2 className="animate-spin" />
-            <p>Fetching Data...</p>
-          </div>
-        )}
-        {value && <DataTable data={tasks!} columns={columns} />}
-      </div>
+          {loading && (
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="animate-spin" />
+              <p>Fetching Data...</p>
+            </div>
+          )}
+          {value && <DataTable data={tasks!} columns={columns} />}
+        </div>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Edit Task.</SheetTitle>
+            <SheetDescription>
+              This action cannot be undone. This will permanently update your
+              task.
+            </SheetDescription>
+          </SheetHeader>
+          <EditTaskForm isDialogOpen={handleSheetOpen} />
+        </SheetContent>
+      </Sheet>
     </>
   );
 }

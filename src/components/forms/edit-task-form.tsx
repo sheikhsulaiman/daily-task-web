@@ -20,42 +20,47 @@ import { Separator } from "../ui/separator";
 import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
 import { Loader2 } from "lucide-react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { toast } from "sonner";
 
-interface NewTaskFormProps {
+interface EditTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
 }
-const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
+const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
+  const selectedTaskToEdit = useTaskStore((state) => state.selectedTaskToEdit);
   const [isLoading, setIsLoadind] = useState<boolean>(false);
-  const globalTask = useTaskStore((state) => state.tasks);
-  const addNewTask = useTaskStore((state) => state.pushTask);
-  const newTaskForm = useForm<Task>({
+  const EditTaskForm = useForm<Task>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      id: `TASK-${globalTask.length}`,
-      title: "",
-      label: labels[0].value,
-      priority: priorities[0].value,
-      status: statuses[0].value,
+      id: selectedTaskToEdit?.id,
+      title: selectedTaskToEdit?.title,
+      label: selectedTaskToEdit?.label,
+      priority: selectedTaskToEdit?.priority,
+      status: selectedTaskToEdit?.status,
     },
   });
 
   async function onSubmit(values: Task) {
     setIsLoadind(true);
 
-    await setDoc(doc(db, "tasks", `${values.id}`), values);
-    toast.success(`${values.id} Has been saved successfully.`);
+    await updateDoc(doc(db, "tasks", `${values.id}`), values);
+    toast.success(`${values.id} Has been updated successfully.`);
     setIsLoadind(false);
     isDialogOpen(false);
   }
   return (
-    <Form {...newTaskForm}>
-      <form onSubmit={newTaskForm.handleSubmit(onSubmit)} className="space-y-2">
+    <Form {...EditTaskForm}>
+      <h1 className="font-bold text-2xl text-primary mt-6">
+        {selectedTaskToEdit?.id}
+      </h1>
+      <form
+        onSubmit={EditTaskForm.handleSubmit(onSubmit)}
+        className="space-y-2"
+      >
         {/* <FormField
           name="id"
-          control={newTaskForm.control}
+          control={EditTaskForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Task id</FormLabel>
@@ -68,12 +73,12 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
         /> */}
         <FormField
           name="title"
-          control={newTaskForm.control}
+          control={EditTaskForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Task title</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Buy Milk." {...field} />
+                <Input multiple placeholder="e.g., Buy Milk." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,7 +86,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
         />
         <FormField
           name="status"
-          control={newTaskForm.control}
+          control={EditTaskForm.control}
           render={({ field }) => (
             <FormItem className="border rounded-sm p-2">
               <FormLabel>Status</FormLabel>
@@ -91,7 +96,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
                   defaultChecked={true}
                   defaultValue={field.value}
                   onValueChange={field.onChange}
-                  className="flex gap-2 justify-between"
+                  className="flex flex-wrap gap-2 justify-between"
                 >
                   {statuses.map((status) => (
                     <FormItem
@@ -121,7 +126,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
         <div className="flex gap-2  w-full">
           <FormField
             name="label"
-            control={newTaskForm.control}
+            control={EditTaskForm.control}
             render={({ field }) => (
               <FormItem className="border flex-1 rounded-sm p-2">
                 <FormLabel>Label</FormLabel>
@@ -155,7 +160,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
           />
           <FormField
             name="priority"
-            control={newTaskForm.control}
+            control={EditTaskForm.control}
             render={({ field }) => (
               <FormItem className="border flex-1 rounded-sm p-2">
                 <FormLabel>Priority</FormLabel>
@@ -201,7 +206,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
             Cancel
           </Button>
           <Button disabled={isLoading} variant={"default"} type="submit">
-            {isLoading && <Loader2 className="animate-spin h-3 w-3" />} Save
+            {isLoading && <Loader2 className="animate-spin h-3 w-3" />} Update
           </Button>
         </div>
       </form>
@@ -209,4 +214,4 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
   );
 };
 
-export default NewTaskForm;
+export default EditTaskForm;

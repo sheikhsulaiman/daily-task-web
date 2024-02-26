@@ -15,10 +15,11 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SheetTrigger } from "@/components/ui/sheet";
 
 import { labels } from "../data/data";
 import { taskSchema } from "../data/schema";
-import { Link } from "react-router-dom";
+import { useTaskStore } from "@/stores/task-store";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,6 +29,9 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const task = taskSchema.parse(row.original);
+  const setSelectedTaskToEdit = useTaskStore(
+    (state) => state.setSelectedTaskToEdit
+  );
 
   return (
     <DropdownMenu>
@@ -41,9 +45,13 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <Link to={`tasks/${task.id}`}>
+        <SheetTrigger
+          className="w-full"
+          onClick={() => setSelectedTaskToEdit(task)}
+        >
           <DropdownMenuItem>Edit</DropdownMenuItem>
-        </Link>
+        </SheetTrigger>
+
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
