@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
 import { Loader2 } from "lucide-react";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
 
 interface EditTaskFormProps {
@@ -29,6 +29,7 @@ interface EditTaskFormProps {
 }
 const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
   const selectedTaskToEdit = useTaskStore((state) => state.selectedTaskToEdit);
+  const updateTask = useTaskStore((state) => state.updateTask);
   const [isLoading, setIsLoadind] = useState<boolean>(false);
   const EditTaskForm = useForm<Task>({
     resolver: zodResolver(taskSchema),
@@ -38,12 +39,14 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
       label: selectedTaskToEdit?.label,
       priority: selectedTaskToEdit?.priority,
       status: selectedTaskToEdit?.status,
+      useruid: auth.currentUser?.uid,
     },
   });
 
   async function onSubmit(values: Task) {
     setIsLoadind(true);
 
+    updateTask(values);
     await updateDoc(doc(db, "tasks", `${values.id}`), values);
     toast.success(`${values.id} Has been updated successfully.`);
     setIsLoadind(false);
@@ -58,19 +61,6 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
         onSubmit={EditTaskForm.handleSubmit(onSubmit)}
         className="space-y-2"
       >
-        {/* <FormField
-          name="id"
-          control={EditTaskForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Task id</FormLabel>
-              <FormControl>
-                <Input placeholder="form id" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <FormField
           name="title"
           control={EditTaskForm.control}

@@ -1,5 +1,6 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
+import { doc, deleteDoc } from "firebase/firestore";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +19,9 @@ import {
 import { SheetTrigger } from "@/components/ui/sheet";
 
 import { labels } from "../data/data";
-import { taskSchema } from "../data/schema";
+import { Task, taskSchema } from "../data/schema";
 import { useTaskStore } from "@/stores/task-store";
+import { db } from "@/firebase/config";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,6 +34,14 @@ export function DataTableRowActions<TData>({
   const setSelectedTaskToEdit = useTaskStore(
     (state) => state.setSelectedTaskToEdit
   );
+
+  const { deleteTask } = useTaskStore();
+
+  async function handleDeleteTask(task: Task) {
+    const id: string = task.id;
+    deleteTask(task);
+    await deleteDoc(doc(db, "tasks", id));
+  }
 
   return (
     <DropdownMenu>
@@ -68,7 +78,11 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            handleDeleteTask(task);
+          }}
+        >
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>

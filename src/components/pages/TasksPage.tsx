@@ -18,7 +18,9 @@ import { useEffect, useState } from "react";
 
 export default function TasksPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { tasks, pushTask } = useTaskStore();
+
+  const tasks = useTaskStore((state) => state.tasks);
+  const pushTask = useTaskStore((state) => state.pushTask);
 
   useEffect(() => {
     //Reference to the task collection
@@ -30,11 +32,14 @@ export default function TasksPage() {
       where("useruid", "==", auth.currentUser?.uid)
     );
     const fetchData = async () => {
-      console.log("Reading firestore data.");
       try {
         setIsLoading(true);
         const querySnapshot = await getDocs(taskQuery);
-        querySnapshot.forEach((doc) => pushTask(doc.data() as Task));
+
+        querySnapshot.forEach((doc) => {
+          pushTask(doc.data() as Task);
+        });
+
         setIsLoading(false);
       } catch (error) {
         toast.error("Something went wrong.");
@@ -42,25 +47,6 @@ export default function TasksPage() {
     };
     fetchData();
   }, []);
-
-  // const [value, isLoading, error] = useCollection(collection(db, "tasks"), {
-  //   snapshotListenOptions: { includeMetadataChanges: true },
-  // });
-
-  // const rawData = value?.docs.map((doc) => doc.data() as Task);
-  // const globalTask = useTaskStore((state)=>state.tasks);
-  // const setInitialTasks = useTaskStore((state) => state.setInitialTasks);
-  // const tasks: Task[] | undefined = rawData;
-  // useEffect(() => {
-  //   if (value) {
-  //     setInitialTasks(rawData!);
-  //   }
-  // }, [value, setInitialTasks]);
-  // const tasks: Task[] | undefined = useTaskStore((state) => state.tasks);
-
-  // if (error) {
-  //   toast.error(error.message);
-  // }
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   function handleSheetOpen(open: boolean): void {
