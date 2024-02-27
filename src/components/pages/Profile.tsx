@@ -52,6 +52,7 @@ const Profile = () => {
 
   const handleImageUpload = async () => {
     try {
+      console.log("something");
       if (pickedImage) {
         await uploadFile(ref, pickedImage, {
           contentType: pickedImage.type,
@@ -114,7 +115,7 @@ const Profile = () => {
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     disabled={!isImagePicked}
-                    onClick={handleImageUpload}
+                    onClick={() => handleImageUpload()}
                   >
                     Continue
                   </AlertDialogAction>
@@ -144,7 +145,7 @@ const Profile = () => {
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   disabled={!isImagePicked}
-                  onClick={() => handleImageUpload}
+                  onClick={() => handleImageUpload()}
                 >
                   Continue
                 </AlertDialogAction>

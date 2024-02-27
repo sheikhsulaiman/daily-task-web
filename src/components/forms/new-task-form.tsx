@@ -185,6 +185,43 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
               </FormItem>
             )}
           />
+          <FormField
+            name="priority"
+            control={newTaskForm.control}
+            render={({ field }) => (
+              <FormItem className="border flex-1 rounded-sm p-2">
+                <FormLabel>Priority Type</FormLabel>
+                <Separator />
+                <FormControl>
+                  <RadioGroup
+                    defaultChecked={true}
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    {priorities.map((priority) => (
+                      <FormItem
+                        key={priority.value}
+                        className="flex items-end space-x-2"
+                      >
+                        <RadioGroupItem
+                          value={priority.value}
+                          id={priority.label}
+                        />
+
+                        <FormLabel
+                          className="hover:cursor-pointer w-full"
+                          htmlFor={priority.label}
+                        >
+                          {priority.label}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className=" flex gap-2 justify-end">

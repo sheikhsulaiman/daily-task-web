@@ -21,6 +21,7 @@ export default function TasksPage() {
 
   const tasks = useTaskStore((state) => state.tasks);
   const pushTask = useTaskStore((state) => state.pushTask);
+  const clear = useTaskStore((state) => state.clear);
 
   useEffect(() => {
     //Reference to the task collection
@@ -34,6 +35,7 @@ export default function TasksPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+        clear();
         const querySnapshot = await getDocs(taskQuery);
 
         querySnapshot.forEach((doc) => {

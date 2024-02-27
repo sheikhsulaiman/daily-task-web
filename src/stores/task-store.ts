@@ -8,11 +8,17 @@ type TaskStore = {
   setSelectedTaskToEdit: (task: Task) => void;
   deleteTask: (task: Task) => void;
   updateTask: (task: Task) => void;
+  clear: () => void;
 };
 
 export const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
   selectedTaskToEdit: null,
+  clear: () => {
+    set((state) => ({
+      tasks: [],
+    }));
+  },
 
   pushTask: (task) => {
     set((state) => {
