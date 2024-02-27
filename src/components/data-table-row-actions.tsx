@@ -7,24 +7,18 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SheetTrigger } from "@/components/ui/sheet";
 
-import { labels } from "../data/data";
 import { Task, taskSchema } from "../data/schema";
 import { useTaskStore } from "@/stores/task-store";
 import { db } from "@/firebase/config";
-import { Copy, Pencil, Trash2 } from "lucide-react";
+import { Copy, Loader2, Pencil, Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
+import { useState } from "react";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -40,20 +34,29 @@ export function DataTableRowActions<TData>({
   );
 
   const { deleteTask } = useTaskStore();
+  const [isloading, setIsloading] = useState<boolean>(false);
 
   async function handleDeleteTask(task: Task) {
+    setIsloading(true);
     const id: string = task.id;
-    deleteTask(task);
     await deleteDoc(doc(db, "tasks", id));
+    deleteTask(task);
+    toast.success("Deleted successfully.");
+    setIsloading(false);
   }
 
   async function handleDuplicateTask(task: Task) {
+    setIsloading(true);
     let newTask = task;
+    const oldTitle = task.title;
+    const newTitle = oldTitle + " - copy";
     const newId = `TASK-${uuidv4()}`;
     newTask["id"] = newId;
+    newTask["title"] = newTitle;
     await setDoc(doc(db, "tasks", `${newId}`), newTask);
     pushTask(newTask);
-    toast.success("Successfully duplicated.");
+    toast.success("Successfully copied.");
+    setIsloading(false);
   }
 
   return (
@@ -63,7 +66,12 @@ export function DataTableRowActions<TData>({
           variant="ghost"
           className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
         >
-          <DotsHorizontalIcon className="h-4 w-4" />
+          {isloading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <DotsHorizontalIcon className="h-4 w-4" />
+          )}
+
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
