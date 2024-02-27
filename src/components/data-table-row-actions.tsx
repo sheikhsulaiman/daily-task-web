@@ -1,6 +1,6 @@
 import { DotsHorizontalIcon, DropdownMenuIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, setDoc } from "firebase/firestore";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,8 @@ import { Task, taskSchema } from "../data/schema";
 import { useTaskStore } from "@/stores/task-store";
 import { db } from "@/firebase/config";
 import { Copy, Pencil, Trash2 } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,6 +34,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const task = taskSchema.parse(row.original);
+  const pushTask = useTaskStore((state) => state.pushTask);
   const setSelectedTaskToEdit = useTaskStore(
     (state) => state.setSelectedTaskToEdit
   );
@@ -42,6 +45,15 @@ export function DataTableRowActions<TData>({
     const id: string = task.id;
     deleteTask(task);
     await deleteDoc(doc(db, "tasks", id));
+  }
+
+  async function handleDuplicateTask(task: Task) {
+    let newTask = task;
+    const newId = `TASK-${uuidv4()}`;
+    newTask["id"] = newId;
+    await setDoc(doc(db, "tasks", `${newId}`), newTask);
+    pushTask(newTask);
+    toast.success("Successfully duplicated.");
   }
 
   return (
@@ -66,7 +78,11 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
         </SheetTrigger>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            handleDuplicateTask(task);
+          }}
+        >
           Make a copy <Copy className="ml-auto h-4 w-4" />
         </DropdownMenuItem>
 
