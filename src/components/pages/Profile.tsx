@@ -1,19 +1,21 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { ProfileForm } from "@/components/forms/profile-form";
 import { auth, storage } from "@/firebase/config";
-import { ImagePlusIcon, Loader2, PencilIcon } from "lucide-react";
+import { ImagePlusIcon, Loader2, PencilIcon, Trash2Icon } from "lucide-react";
 import { getDownloadURL, ref as storageRef } from "firebase/storage";
 import { useUploadFile } from "react-firebase-hooks/storage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatarFallbackGenarator from "@/components/avatar-fallback-generator";
 import { useUpdateProfile } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
+import { useDeleteUser } from "react-firebase-hooks/auth";
 
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -23,6 +25,8 @@ import ImagePicker from "../ImagePicker";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import UpdatePasswordForm from "../forms/reset-password";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
 
 const Profile = () => {
   const [pickedImage, setPickedImage] = useState<File | null>(null);
@@ -34,6 +38,7 @@ const Profile = () => {
   const profilePic = user?.photoURL;
 
   const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
+  const [deleteUser, deleteUserLoading, deleteUserError] = useDeleteUser(auth);
 
   const ref = storageRef(
     storage,
@@ -67,12 +72,23 @@ const Profile = () => {
     }
   };
 
+  const onDeleteUser = async () => {
+    const success = await deleteUser();
+    if (success) {
+      toast.success("User Account deleted successfully.");
+    }
+  };
+
   if (pickedImage !== null && userProfileUpdateError) {
     toast.error(userProfileUpdateError.message);
   }
 
   if (pickedImage !== null && uploadError) {
     toast.error(uploadError.message);
+  }
+
+  if (deleteUserError) {
+    toast.error(deleteUserError.message);
   }
 
   const handleFileReceive = (file: File) => {
@@ -156,7 +172,39 @@ const Profile = () => {
         )}
       </div>
       <ProfileForm />
+      <Separator />
       <UpdatePasswordForm />
+      <Separator />
+      <AlertDialog>
+        <AlertDialogTrigger>
+          <Button type="button" variant={"destructive"}>
+            <Trash2Icon className="mr-2 font-bold" size={20} />
+            Delete Current User Account
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                onDeleteUser();
+              }}
+            >
+              {deleteUserLoading && (
+                <Loader2 className="animate-spin mr-2" size={20} />
+              )}
+              {deleteUserLoading ? "Deleting..." : "Continue"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
