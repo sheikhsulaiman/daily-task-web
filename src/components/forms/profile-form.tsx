@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { auth } from "@/firebase/config";
-import { Loader2Icon } from "lucide-react";
+import { KeyIcon, Loader2Icon, MailIcon } from "lucide-react";
 import { toast } from "sonner";
 
 const profileFormSchema = z.object({
@@ -76,31 +76,50 @@ export function ProfileForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Display name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={auth.currentUser?.displayName ?? "e.g, Sulaiman"}
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym.
-              </FormDescription>
+    <>
+      <div className="flex items-center border rounded-sm">
+        <div className="bg-primary h-full p-2 overflow-hidden">
+          <MailIcon className="text-secondary" />
+        </div>
+        <h1 className=" ml-2 font-bold text-primary flex-1">
+          {auth.currentUser?.email}
+        </h1>
+        <Button
+          onClick={() => {
+            auth.signOut();
+          }}
+        >
+          <KeyIcon size={20} className="mr-2" />
+          Log Out
+        </Button>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Display name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={
+                      auth.currentUser?.displayName ?? "e.g, Sulaiman"
+                    }
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name. It can be your real name or
+                  a pseudonym.
+                </FormDescription>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* <FormField
+          {/* <FormField
           control={form.control}
           name="bio"
           render={({ field }) => (
@@ -118,7 +137,7 @@ export function ProfileForm() {
             </FormItem>
           )}
         /> */}
-        {/* <div>
+          {/* <div>
           {fields.map((field, index) => (
             <FormField
               control={form.control}
@@ -150,14 +169,15 @@ export function ProfileForm() {
             Add URL
           </Button>
         </div> */}
-        <Button
-          className="flex items-center justify-center gap-2"
-          type="submit"
-        >
-          {updating && <Loader2Icon className="h-3 w-3 animate-spin" />}
-          Update profile
-        </Button>
-      </form>
-    </Form>
+          <Button
+            className="flex items-center justify-center gap-2"
+            type="submit"
+          >
+            {updating && <Loader2Icon className="h-3 w-3 animate-spin" />}
+            Update profile
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

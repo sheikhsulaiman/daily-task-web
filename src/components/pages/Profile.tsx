@@ -22,6 +22,7 @@ import {
 import ImagePicker from "../ImagePicker";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import UpdatePasswordForm from "../forms/reset-password";
 
 const Profile = () => {
   const [pickedImage, setPickedImage] = useState<File | null>(null);
@@ -155,6 +156,7 @@ const Profile = () => {
         )}
       </div>
       <ProfileForm />
+      <UpdatePasswordForm />
     </div>
   );
 };

@@ -29,9 +29,14 @@ function App() {
 
         <Route path="/app">
           <Route element={<SettingsLayout />}>
-            <Route path="settings" element={<Profile />} />
-
-            <Route path="settings/account" element={<Account />} />
+            <Route
+              path="settings"
+              element={
+                <RequireAuth>
+                  <Profile />
+                </RequireAuth>
+              }
+            />
           </Route>
           <Route path="tasks/*" element={<TaskPage />} />
         </Route>
