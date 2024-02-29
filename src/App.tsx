@@ -10,6 +10,7 @@ import SettingsLayout from "@/components/pages/SettingsLayout";
 import RequireAuth from "@/components/RequireAuth";
 import Profile from "@/components/pages/Profile";
 import TaskPage from "./components/pages/TaskPage";
+import Account from "./components/pages/Account";
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
         <Route path="/app">
           <Route element={<SettingsLayout />}>
             <Route path="settings" element={<Profile />} />
+
+            <Route path="settings/account" element={<Account />} />
           </Route>
           <Route path="tasks/*" element={<TaskPage />} />
         </Route>

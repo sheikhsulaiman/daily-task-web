@@ -1,53 +1,14 @@
 import { Separator } from "@/components/ui/separator";
-import { SidebarNav } from "@/components/nav/sidebar-nav";
+
 import { Outlet } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 
-const sidebarNavItems = [
-  {
-    title: "Profile",
-    href: "/app/settings",
-  },
-  {
-    title: "Account",
-    href: "/app/settings/account",
-  },
-  {
-    title: "Appearance",
-    href: "/app/settings/appearance",
-  },
-  {
-    title: "Notifications",
-    href: "/app/settings/notifications",
-  },
-  {
-    title: "Display",
-    href: "/app/settings/display",
-  },
-];
-
 export default function SettingsLayout() {
   const navigate = useNavigate();
   return (
     <>
-      <div className="md:hidden">
-        <img
-          src="/app/settings-light.png"
-          width={1280}
-          height={791}
-          alt="Forms"
-          className="block dark:hidden"
-        />
-        <img
-          src="/app/settings-dark.png"
-          width={1280}
-          height={791}
-          alt="Forms"
-          className="hidden dark:block"
-        />
-      </div>
       <div className="hidden space-y-6 p-10 pb-16 md:block">
         <div className="flex space-y-0.5">
           <Button
@@ -64,14 +25,10 @@ export default function SettingsLayout() {
             </p>
           </div>
         </div>
-        <Separator className="my-6" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5">
-            <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex-1 lg:max-w-2xl">
-            <Outlet />
-          </div>
+
+        <Separator />
+        <div className=" container flex-1 lg:max-w-2xl">
+          <Outlet />
         </div>
       </div>
     </>
