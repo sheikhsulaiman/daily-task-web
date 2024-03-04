@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,8 +16,6 @@ import {
 import { auth } from "@/firebase/config";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { toast } from "sonner";
-
-interface UserSignInFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const formSchema = z.object({
   email: z

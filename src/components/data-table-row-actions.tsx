@@ -1,4 +1,4 @@
-import { DotsHorizontalIcon, DropdownMenuIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
 import { doc, deleteDoc, setDoc } from "firebase/firestore";
 
