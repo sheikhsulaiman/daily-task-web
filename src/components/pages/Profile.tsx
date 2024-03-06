@@ -37,7 +37,7 @@ const Profile = () => {
   const userName = user?.displayName;
   const profilePic = user?.photoURL;
 
-  const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
+  const [uploadFile, uploading, _, uploadError] = useUploadFile();
   const [deleteUser, deleteUserLoading, deleteUserError] = useDeleteUser(auth);
 
   const ref = storageRef(

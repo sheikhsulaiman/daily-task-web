@@ -15,7 +15,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
   selectedTaskToEdit: null,
   clear: () => {
-    set((state) => ({
+    set((_) => ({
       tasks: [],
     }));
   },

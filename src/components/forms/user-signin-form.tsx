@@ -41,13 +41,13 @@ export function UserSignInForm() {
     },
   });
 
-  // if (user) {
-  //   return (
-  //     <h1 className="text-center bg-green-400 font-semibold py-1 rounded-sm">
-  //       {"Logged in as: " + user.user.email}
-  //     </h1>
-  //   );
-  // }
+  if (user) {
+    return (
+      <h1 className="text-center bg-green-400 font-semibold py-1 rounded-sm">
+        {"Logged in as: " + user.user.email}
+      </h1>
+    );
+  }
 
   if (error) {
     toast.error(error.message);

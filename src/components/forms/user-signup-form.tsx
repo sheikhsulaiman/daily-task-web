@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,8 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { auth } from "@/firebase/config";
-
-interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const formSchema = z
   .object({
@@ -41,7 +38,7 @@ const formSchema = z
     }
   );
 
-export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
+export function UserSignUpForm() {
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
 

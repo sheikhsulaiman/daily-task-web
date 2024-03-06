@@ -24,8 +24,6 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
 import FavoriteSwitch from "../ui/favorite-switch";
 
 interface NewTaskFormProps {
