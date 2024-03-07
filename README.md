@@ -30,6 +30,10 @@ To get started with the app, follow these steps:
 4. Configure the Firebase credentials in the app.
 5. Run the app using `npm start`.
 
+## Live Preview
+
+like to see a live preview of the app, you can visit the following link: [Task Management App Web](https://dailytaskweb.netlify.app/)
+
 ## Contributing
 
 Contributions are welcome! If you have any suggestions or improvements, please open an issue or submit a pull request.
