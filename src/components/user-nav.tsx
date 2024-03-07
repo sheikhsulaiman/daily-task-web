@@ -13,6 +13,7 @@ import { auth } from "@/firebase/config";
 import { Link } from "react-router-dom";
 import avatarFallbackGenarator from "./avatar-fallback-generator";
 import { LogOut, Settings, UserCircle2 } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
 
 export function UserNav() {
   const profilePic = auth.currentUser?.photoURL;
@@ -32,11 +33,14 @@ export function UserNav() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{userName}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {userEmail}
-            </p>
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{userName}</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                {userEmail}
+              </p>
+            </div>
+            <ModeToggle />
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

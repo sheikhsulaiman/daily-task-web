@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { ModeToggle } from "../mode-toggle";
 
 export default function SettingsLayout() {
   const navigate = useNavigate();
@@ -18,11 +19,14 @@ export default function SettingsLayout() {
           >
             <ArrowLeftIcon />
           </Button>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-            <p className="text-muted-foreground">
-              Manage your account settings and set e-mail preferences.
-            </p>
+          <div className="flex items-center justify-between w-full">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+              <p className="text-muted-foreground">
+                Manage your account settings and set e-mail preferences.
+              </p>
+            </div>
+            <ModeToggle />
           </div>
         </div>
 

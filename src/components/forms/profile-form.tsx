@@ -77,8 +77,8 @@ export function ProfileForm() {
 
   return (
     <>
-      <div className="flex items-center border rounded-sm">
-        <div className="bg-primary h-full p-2 overflow-hidden">
+      <div className="flex items-center border rounded-md overflow-hidden">
+        <div className="bg-primary h-full p-2 ">
           <MailIcon className="text-secondary" />
         </div>
         <h1 className=" ml-2 font-bold text-primary flex-1">
